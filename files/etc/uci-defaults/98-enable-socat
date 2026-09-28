@@ -1,0 +1,5 @@
+#!/bin/sh
+# luci-app-socat 通过 files/ 覆盖安装，不会执行 ipk 的 postinst
+# 这里手动把 init 脚本挂到开机启动，否则重启后服务不会自动运行
+[ -x /etc/init.d/luci_socat ] && /etc/init.d/luci_socat enable
+exit 0

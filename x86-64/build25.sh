@@ -59,6 +59,22 @@ PACKAGES="$PACKAGES openssh-sftp-server"
 
 # 文件管理器
 PACKAGES="$PACKAGES luci-i18n-filemanager-zh-cn"
+
+# ============= 自定义新增：仓库内置软件 =============
+# AdGuard Home（官方源无 zh-cn 翻译，界面为英文）
+PACKAGES="$PACKAGES adguardhome luci-app-adguardhome"
+# mDNS 服务发现
+PACKAGES="$PACKAGES avahi-dbus-daemon"
+# DDNS-GO
+PACKAGES="$PACKAGES ddns-go luci-app-ddns-go luci-i18n-ddns-go-zh-cn"
+# Tailscale 组网
+PACKAGES="$PACKAGES tailscale luci-app-tailscale-community luci-i18n-tailscale-community-zh-cn"
+# KMS 激活
+PACKAGES="$PACKAGES vlmcsd luci-app-vlmcsd luci-i18n-vlmcsd-zh-cn"
+# socat（二进制 + Lua 运行环境 + 兼容层，配合 files/ 里的 LuCI 界面文件）
+PACKAGES="$PACKAGES socat luci-compat luci-lua-runtime"
+# natfrp（SakuraFrp，官方源没有，使用本地下载的 apk；依赖同上）
+PACKAGES="$PACKAGES luci-app-natfrp"
 # ======== shell/apk-custom-packages.sh =======
 # 合并imm仓库以外的第三方插件 暂时注释
 PACKAGES="$PACKAGES $CUSTOM_PACKAGES"
@@ -104,6 +120,20 @@ if echo "$PACKAGES" | grep -q "luci-app-ssr-plus"; then
     ls -lah files/usr/bin
 else
     echo "⚪️ 未选择 luci-app-ssr-plus"
+fi
+
+# ============= luci-app-natfrp (SakuraFrp) =============
+# 25.12 官方源没有此包，上游按架构提供预编译 apk，这里下载 x86_64 版本到本地 packages/
+NATFRP_VER="3.1.8"
+NATFRP_APK="luci-app-natfrp-${NATFRP_VER}-r5-x86_64.apk"
+NATFRP_URL="https://nya.globalslb.net/natfrp/client/launcher-openwrt/${NATFRP_VER}/${NATFRP_APK}"
+mkdir -p /home/build/immortalwrt/packages
+echo "⏬ 下载 luci-app-natfrp: $NATFRP_URL"
+wget -q "$NATFRP_URL" -P /home/build/immortalwrt/packages/
+ls -lah /home/build/immortalwrt/packages/${NATFRP_APK}
+if [ ! -s "/home/build/immortalwrt/packages/${NATFRP_APK}" ]; then
+    echo "❌ luci-app-natfrp 下载失败: $NATFRP_URL"
+    exit 1
 fi
 
 # 构建镜像
