@@ -1,0 +1,9 @@
+#!/bin/sh
+# luci-app-wolplus 的默认配置文件本应位于 /etc/config/wolplus。
+# 但 x86 工作流把 custom 目录挂载覆盖到了 files/etc/config，
+# 会遮蔽放在 files/etc/config/ 下的文件，导致 /etc/config/wolplus 缺失。
+# 而 wolplus 的 Lua controller 有 "if not nixio.fs.access(/etc/config/wolplus) then return end"
+# 的守卫，文件不存在时 LuCI 菜单不显示，看起来像“没装上”。
+# 因此这里在首次启动时补建该文件（内容可为空，与上游默认一致）。
+[ -f /etc/config/wolplus ] || touch /etc/config/wolplus
+exit 0

@@ -31,4 +31,10 @@ mkdir -p "$TMP/data"
 tar -xf "$TMP/x"/data.tar.gz -C "$TMP/data" 2>/dev/null || tar -xf "$TMP/x"/data.tar.* -C "$TMP/data"
 
 cp -a "$TMP/data/." "$DEST/"
+
+# wolplus 的 etc/config/wolplus 会被 x86 工作流的 custom 挂载遮蔽，
+# 这里删掉它，改由 files/etc/uci-defaults/97-wolplus-config 在首次启动时创建。
+rm -f "$DEST/etc/config/wolplus"
+rmdir "$DEST/etc/config" 2>/dev/null || true
+
 echo "✅ luci-app-wolplus 已解包到 $DEST/"
