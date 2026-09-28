@@ -123,15 +123,18 @@ else
 fi
 
 # ============= luci-app-natfrp (SakuraFrp) =============
-# 25.12 官方源没有此包，上游按架构提供预编译 apk，这里下载 x86_64 版本到本地 packages/
+# 25.12 官方源没有此包，上游按架构提供预编译 apk。
+# 注意：上游文件名带架构后缀(-x86_64)，而 OpenWrt 的 apk 索引按 name-version.apk 查找，
+#       必须去掉 -x86_64，否则会报 "package mentioned in index not found"。
 NATFRP_VER="3.1.8"
-NATFRP_APK="luci-app-natfrp-${NATFRP_VER}-r5-x86_64.apk"
-NATFRP_URL="https://nya.globalslb.net/natfrp/client/launcher-openwrt/${NATFRP_VER}/${NATFRP_APK}"
+NATFRP_SRC="luci-app-natfrp-${NATFRP_VER}-r5-x86_64.apk"
+NATFRP_DST="luci-app-natfrp-${NATFRP_VER}-r5.apk"
+NATFRP_URL="https://nya.globalslb.net/natfrp/client/launcher-openwrt/${NATFRP_VER}/${NATFRP_SRC}"
 mkdir -p /home/build/immortalwrt/packages
 echo "⏬ 下载 luci-app-natfrp: $NATFRP_URL"
-wget -q "$NATFRP_URL" -P /home/build/immortalwrt/packages/
-ls -lah /home/build/immortalwrt/packages/${NATFRP_APK}
-if [ ! -s "/home/build/immortalwrt/packages/${NATFRP_APK}" ]; then
+wget -qO "/home/build/immortalwrt/packages/${NATFRP_DST}" "$NATFRP_URL"
+ls -lah "/home/build/immortalwrt/packages/${NATFRP_DST}"
+if [ ! -s "/home/build/immortalwrt/packages/${NATFRP_DST}" ]; then
     echo "❌ luci-app-natfrp 下载失败: $NATFRP_URL"
     exit 1
 fi
