@@ -11,6 +11,11 @@ on:
           - 25.12.0
           - 25.12.1
           - 25.12.2
+      natfrp_version:
+        description: "natfrp(SakuraFrp)版本号, 可在 https://nya.globalslb.net/natfrp/client/launcher-openwrt/ 查看"
+        required: false
+        default: "3.1.8"
+        type: string
       custom_router_ip:
         description: "请设置路由器的管理地址(仅对多网口路由器有效) 格式:192.168.x.1 或 10.x.x.1"
         required: true
@@ -127,6 +132,7 @@ jobs:
             -e ENABLE_PPPOE=${{ inputs.enable_pppoe }} \
             -e PPPOE_ACCOUNT=${{ inputs.pppoe_account }} \
             -e PPPOE_PASSWORD=${{ inputs.pppoe_password }} \
+            -e NATFRP_VERSION=${{ inputs.natfrp_version }} \
           immortalwrt/imagebuilder:x86-64-openwrt-${luci_version} /bin/bash /home/build/immortalwrt/build.sh
           
 
