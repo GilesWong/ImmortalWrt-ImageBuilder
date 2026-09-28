@@ -73,6 +73,8 @@ PACKAGES="$PACKAGES tailscale luci-app-tailscale-community luci-i18n-tailscale-c
 PACKAGES="$PACKAGES vlmcsd luci-app-vlmcsd luci-i18n-vlmcsd-zh-cn"
 # socat（二进制 + Lua 运行环境 + 兼容层，配合 files/ 里的 LuCI 界面文件）
 PACKAGES="$PACKAGES socat luci-compat luci-lua-runtime"
+# 网络唤醒++（LuCI 界面同样通过 files/ 覆盖，仅需依赖 etherwake）
+PACKAGES="$PACKAGES etherwake"
 # natfrp（SakuraFrp，官方源没有，使用本地下载的 apk；依赖同上）
 PACKAGES="$PACKAGES luci-app-natfrp"
 # ======== shell/apk-custom-packages.sh =======
