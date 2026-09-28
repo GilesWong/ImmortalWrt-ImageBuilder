@@ -1,0 +1,34 @@
+# luci-app-wolplus 简体中文翻译
+#
+# 上游 animegasan/luci-app-wolplus 自带的 po/zh-cn/wolplus.po 的 msgid 与代码里的
+# 实际字符串不一致（例如用 "wolplus"/"maceth" 去匹配代码中的 "Wake on LAN +"/
+# "Network Interface"），所以从源码编译时翻译不生效，界面会是英文。
+# 参见 issue #1 与 PR #2 (Fix i18n file of chinese)。
+#
+# 这里采用 PR#2 修正后的 msgid，并补上 controller 里的菜单字符串。
+# 用 shell/po2lmo.py 编译为 files/usr/lib/lua/luci/i18n/wolplus.zh-cn.lmo。
+msgid "Wake on LAN"
+msgstr "网络唤醒"
+
+msgid "Wake on LAN +"
+msgstr "网络唤醒+"
+
+msgid "Wake on LAN is a mechanism to remotely boot computers in the local network."
+msgstr "唤醒你的局域网设备"
+
+msgid "Host Clients"
+msgstr "设备列表"
+
+msgid "Name"
+msgstr "名称"
+
+# 说明: "MAC Address" 未列入。luci-i18n-base-zh-cn 已将其译为 "MAC 地址"，
+# 若在应用自带 lmo 里重复定义会覆盖全局翻译，影响其它页面，故交给基础语言包。
+msgid "Network Interface"
+msgstr "网络接口"
+
+msgid "Wake Up Host"
+msgstr "唤醒主机"
+
+msgid "Awake"
+msgstr "唤醒"

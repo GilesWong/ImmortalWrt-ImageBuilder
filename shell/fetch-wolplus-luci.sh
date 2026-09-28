@@ -37,4 +37,13 @@ cp -a "$TMP/data/." "$DEST/"
 rm -f "$DEST/etc/config/wolplus"
 rmdir "$DEST/etc/config" 2>/dev/null || true
 
+# 上游自带 po 的 msgid 与代码不符，翻译不生效；用仓库里修正后的 po 生成 lmo。
+SELFDIR=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
+if command -v python3 >/dev/null 2>&1; then
+    mkdir -p "$DEST/usr/lib/lua/luci/i18n"
+    python3 "$SELFDIR/po2lmo.py" "$SELFDIR/wolplus-zh-cn.po" "$DEST/usr/lib/lua/luci/i18n/wolplus.zh-cn.lmo"
+else
+    echo "⚠️ 未找到 python3，跳过 wolplus.zh-cn.lmo 生成（仓库中已有该文件）"
+fi
+
 echo "✅ luci-app-wolplus 已解包到 $DEST/"
