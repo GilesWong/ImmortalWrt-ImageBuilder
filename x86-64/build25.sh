@@ -77,6 +77,17 @@ PACKAGES="$PACKAGES socat luci-compat luci-lua-runtime"
 PACKAGES="$PACKAGES etherwake"
 # natfrp（SakuraFrp，官方源没有，使用本地下载的 apk；依赖同上）
 PACKAGES="$PACKAGES luci-app-natfrp"
+# UPnP（含 nftables 版 daemon）
+PACKAGES="$PACKAGES luci-app-upnp luci-i18n-upnp-zh-cn miniupnpd-nftables"
+# Netdata 实时监控
+PACKAGES="$PACKAGES netdata luci-app-netdata luci-i18n-netdata-zh-cn"
+# nlbwmon 带宽监控
+PACKAGES="$PACKAGES nlbwmon luci-app-nlbwmon luci-i18n-nlbwmon-zh-cn"
+# 定时限速 eqosplus（第三方 apk，见下方下载块）
+PACKAGES="$PACKAGES ip-full tc nftables bc kmod-ifb luci-app-eqosplus luci-i18n-eqosplus-zh-cn"
+# 网络测速 netspeedtest（第三方 apk，见下方下载块）
+PACKAGES="$PACKAGES luci-app-netspeedtest luci-i18n-netspeedtest-zh-cn ookla-speedtest homebox iperf3-ssl jq"
+PACKAGES="$PACKAGES python3-light python3-pkg-resources python3-xml python3-email python3-urllib python3-codecs python3-openssl"
 # ======== shell/apk-custom-packages.sh =======
 # 合并imm仓库以外的第三方插件 暂时注释
 PACKAGES="$PACKAGES $CUSTOM_PACKAGES"
@@ -148,6 +159,29 @@ if [ ! -s "/home/build/immortalwrt/packages/${NATFRP_DST}" ]; then
     echo "❌ luci-app-natfrp 下载失败: $NATFRP_URL"
     exit 1
 fi
+
+# ============= 第三方 apk: eqosplus / netspeedtest =============
+# 官方源没有这两个插件，从上游 release 下载已编译 apk 到本地 packages/。
+# 升级时改版本号并同步文件名:
+#   eqosplus:     https://github.com/sirpdboy/luci-app-eqosplus/releases
+#   netspeedtest: https://github.com/sirpdboy/netspeedtest/releases
+EQOSPLUS_REL="v1.3.0"
+EQOSPLUS_APKS="luci-app-eqosplus-1.3.0-r20251128.apk luci-i18n-eqosplus-zh-cn-0.apk"
+for f in $EQOSPLUS_APKS; do
+    wget -qO "/home/build/immortalwrt/packages/$f" \
+        "https://github.com/sirpdboy/luci-app-eqosplus/releases/download/${EQOSPLUS_REL}/$f" \
+        || { echo "❌ eqosplus 下载失败: $f"; exit 1; }
+done
+
+NETSPEED_REL="v5.2.1"
+# 25.12 用 apk，必须取 SNAPSHOT 包；openwrt-24.10 那个包是 ipk，不能用于 25.12
+NETSPEED_TAR="SNAPSHOT-x86_64.tar.gz"
+wget -qO /tmp/netspeedtest.tar.gz \
+    "https://github.com/sirpdboy/netspeedtest/releases/download/${NETSPEED_REL}/${NETSPEED_TAR}" \
+    || { echo "❌ netspeedtest 下载失败"; exit 1; }
+rm -rf /tmp/netspeedtest && mkdir -p /tmp/netspeedtest
+tar -xzf /tmp/netspeedtest.tar.gz -C /tmp/netspeedtest
+cp -v /tmp/netspeedtest/packages_ci/*.apk /home/build/immortalwrt/packages/
 
 # 构建镜像
 echo "$(date '+%Y-%m-%d %H:%M:%S') - Building image with the following packages:"
